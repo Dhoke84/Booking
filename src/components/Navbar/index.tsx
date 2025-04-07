@@ -7,15 +7,20 @@ import {
   IconButton,
   Drawer,
   List,
-  ListItem,
   ListItemText,
   Box,
+  useTheme,
+  useMediaQuery,
+  Divider,
+  ListItemButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { NavLink } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -24,91 +29,187 @@ const Navbar: React.FC = () => {
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Bookings", path: "/book" },
-    { label: "Venue", path: "/venue" },
+    { label: "Venues", path: "/venue" },
     { label: "Profile", path: "/profile" },
   ];
 
   return (
     <>
-      {/* Fixed Navbar */}
       <AppBar
         position="fixed"
         sx={{
           backgroundColor: "white",
+          borderBottom: "1px solid #ddd",
           boxShadow: "none",
-          borderBottom: "1px solid #ccc",
-          zIndex: 1100, // Ensures it's above other content
+          zIndex: 1100,
         }}
       >
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          
-          {/* Logo */}
-          <Typography variant="h6" sx={{ fontWeight: "bold", fontSize: "1.5rem", color: "#3f51b5" }}>
-            LOGO
-          </Typography>
+        <Toolbar
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            minHeight: "64px",
+            px: 2,
+          }}
+        >
+          {isMobile ? (
+            <>
+              {/* Left: Menu Icon */}
+              <IconButton edge="start" onClick={handleDrawerToggle} sx={{ color: "#333" }}>
+                <MenuIcon />
+              </IconButton>
 
-          {/* Desktop Navigation Links */}
-          <Box sx={{ display: { xs: "none", sm: "flex" }, gap: "20px" }}>
-            {navItems.map((item) => (
+              {/* Center: Logo */}
+              <Typography variant="h6" sx={{ fontWeight: "bold", color: "#111", flexGrow: 1, textAlign: "center" }}>
+                logo
+              </Typography>
+
+              {/* Right: Sign In text */}
               <Button
-                key={item.label}
                 component={NavLink}
-                to={item.path}
+                to="/signin"
                 sx={{
-                  color: "black",
+                  color: "#111",
                   textTransform: "none",
-                  fontSize: "1rem",
-                  fontWeight: "normal",
-                  "&.active": { color: "#3f51b5", fontWeight: "bold", borderBottom: "2px solid #3f51b5" },
-                  "&:hover": { color: "#3f51b5" },
+                  fontWeight: "bold",
+                  fontSize: "0.9rem",
                 }}
               >
-                {item.label}
+                Sign In
               </Button>
-            ))}
-          </Box>
+            </>
+          ) : (
+            <>
+              {/* Logo on the left */}
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ fontWeight: "bold", color: "#3f51b5" }}
+              >
+                LOGO
+              </Typography>
 
-          {/* Sign In / Sign Up Buttons */}
-          <Box sx={{ display: { xs: "none", sm: "flex" }, gap: "10px" }}>
-            <Button component={NavLink} to="/signin" variant="contained" sx={{ backgroundColor: "black", color: "white", textTransform: "none" }}>
-              Sign In
-            </Button>
-            <Button component={NavLink} to="/signup" variant="outlined" sx={{ color: "black", borderColor: "black", textTransform: "none" }}>
-              Sign Up
-            </Button>
-          </Box>
+              {/* Desktop Navigation Links */}
+              <Box sx={{ display: "flex", gap: 3 }}>
+                {navItems.map((item) => (
+                  <Button
+                    key={item.label}
+                    component={NavLink}
+                    to={item.path}
+                    sx={{
+                      color: "#666",
+                      fontWeight: "normal",
+                      textTransform: "none",
+                      "&.active": {
+                        color: "#000",
+                        fontWeight: "bold",
+                      },
+                      "&:hover": {
+                        color: "#3f51b5",
+                      },
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </Box>
 
-          {/* Mobile Menu Icon */}
-          <IconButton
-            color="inherit"
-            edge="end"
-            sx={{ display: { sm: "none" } }}
-            onClick={handleDrawerToggle}
-          >
-            <MenuIcon />
-          </IconButton>
+              {/* Desktop Auth Buttons */}
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <Button
+                  component={NavLink}
+                  to="/signin"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    textTransform: "none",
+                    "&:hover": { backgroundColor: "#333" },
+                  }}
+                >
+                  Sign in
+                </Button>
+                <Button
+                  component={NavLink}
+                  to="/signup"
+                  variant="outlined"
+                  sx={{
+                    color: "black",
+                    borderColor: "black",
+                    textTransform: "none",
+                    "&:hover": { borderColor: "#3f51b5", color: "#3f51b5" },
+                  }}
+                >
+                  Sign up
+                </Button>
+              </Box>
+            </>
+          )}
         </Toolbar>
       </AppBar>
 
       {/* Mobile Drawer */}
-      <Drawer anchor="right" open={mobileOpen} onClose={handleDrawerToggle}>
-        <List>
-          {navItems.map((item) => (
-            <ListItem key={item.label} component={NavLink} to={item.path} onClick={handleDrawerToggle}>
-              <ListItemText primary={item.label} />
-            </ListItem>
-          ))}
-          <ListItem component={NavLink} to="/signin" onClick={handleDrawerToggle}>
-            <ListItemText primary="Sign In" />
-          </ListItem>
-          <ListItem component={NavLink} to="/signup" onClick={handleDrawerToggle}>
-            <ListItemText primary="Sign Up" />
-          </ListItem>
-        </List>
+      <Drawer anchor="left" open={mobileOpen} onClose={handleDrawerToggle}>
+        <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
+          <List>
+            {navItems.map((item) => (
+              <ListItemButton
+                key={item.label}
+                component={NavLink}
+                to={item.path}
+                sx={{
+                  textTransform: "none",
+                  color: "inherit",
+                  padding: "10px 16px",
+                  "&.active": {
+                    fontWeight: "bold",
+                    color: "#3f51b5",
+                  },
+                }}
+              >
+                <ListItemText primary={item.label} />
+              </ListItemButton>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            <ListItemButton
+              component={NavLink}
+              to="/signin"
+              sx={{
+                textTransform: "none",
+                color: "inherit",
+                padding: "10px 16px",
+                "&.active": {
+                  fontWeight: "bold",
+                  color: "#3f51b5",
+                },
+              }}
+            >
+              <ListItemText primary="Sign in" />
+            </ListItemButton>
+            <ListItemButton
+              component={NavLink}
+              to="/signup"
+              sx={{
+                textTransform: "none",
+                color: "inherit",
+                padding: "10px 16px",
+                "&.active": {
+                  fontWeight: "bold",
+                  color: "#3f51b5",
+                },
+              }}
+            >
+              <ListItemText primary="Sign up" />
+            </ListItemButton>
+          </List>
+        </Box>
       </Drawer>
 
-      {/* Add margin to content so it doesn't get hidden under the navbar */}
-      <Box sx={{ marginTop: "64px" }} />
+      {/* Spacer to push content below navbar */}
+      <Box sx={{ height: "64px" }} />
     </>
   );
 };
