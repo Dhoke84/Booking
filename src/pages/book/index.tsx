@@ -1,11 +1,15 @@
 import React from 'react'
+import Navbar from '../../components/Navbar'
+import Footer from '../../components/Footer'
 
 const index = () => {
   return (
-    <div>
-      No design yet 
-      
-    </div>
+   <>
+   <Navbar />
+
+   <Footer />
+   
+     </>
   )
 }
 
