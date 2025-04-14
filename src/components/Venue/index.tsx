@@ -1,3 +1,4 @@
+// VenueList.tsx
 import React from "react";
 import {
   Box,
@@ -10,6 +11,7 @@ import {
   Chip
 } from "@mui/material";
 import { Star, LocationOn } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 interface Venue {
   id: number;
@@ -70,16 +72,10 @@ const venues: Venue[] = [
 ];
 
 const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
+  const navigate = useNavigate();
+
   return (
-    <Card
-      sx={{
-        width: "100%",
-        borderRadius: 2,
-        boxShadow: 2,
-        position: "relative"
-      }}
-    >
-      {/* Availability Label */}
+    <Card sx={{ width: "100%", borderRadius: 2, boxShadow: 2, position: "relative" }}>
       <Chip
         label={venue.availability}
         color={venue.availability === "Available" ? "success" : "warning"}
@@ -91,8 +87,6 @@ const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
           fontWeight: "bold"
         }}
       />
-
-      {/* Image */}
       <CardMedia
         component="img"
         height="140"
@@ -100,41 +94,30 @@ const VenueCard: React.FC<{ venue: Venue }> = ({ venue }) => {
         alt={venue.name}
         sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
       />
-
-      {/* Content */}
       <CardContent sx={{ p: 2 }}>
         <Typography variant="subtitle1" fontWeight="bold">
           {venue.name}
         </Typography>
-
-        {/* Rating */}
         <Box display="flex" alignItems="center" gap={0.5}>
           <Star sx={{ color: "gold", fontSize: "1rem" }} />
           <Typography variant="body2">
             {venue.rating} ({venue.reviews} reviews)
           </Typography>
         </Box>
-
-        {/* Location */}
         <Box display="flex" alignItems="center" gap={0.5} mt={1}>
           <LocationOn fontSize="small" sx={{ color: "gray" }} />
           <Typography variant="body2" color="text.secondary">
             {venue.location}
           </Typography>
         </Box>
-
-        {/* Price & Button */}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          mt={2}
-        >
+        <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
           <Typography variant="h6" fontWeight="bold">
             {venue.price}
           </Typography>
           <Button
             variant="contained"
+            onClick={() => navigate(`/details/${venue.id}`)}
+
             sx={{
               backgroundColor: "black",
               color: "white",
